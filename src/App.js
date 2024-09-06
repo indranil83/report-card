@@ -20,7 +20,7 @@ const App = () => {
   const [data, setData] = useState([]);
   const barChartRef = useRef();
   const pieChartRef = useRef();
-  
+
 
   useEffect(() => {
     fetch("https://dummyjson.com/products")
@@ -42,7 +42,6 @@ const App = () => {
         groupedData[item.category] = item.price;
       }
     });
-
     return groupedData;
   };
 
@@ -60,18 +59,7 @@ const App = () => {
       },
     ],
   };
-  const radarChartData = {
-    labels: data.map((item) => item.title),
-    datasets: [
-      {
-        label: "Product Ratings",
-        data: data.map((item) => item.rating),
-        backgroundColor: "rgba(75, 192, 192, 0.2)",
-        borderColor: "rgba(75, 192, 192, 1)",
-      },
-    ],
-  };
-
+  
   const pieChartData = {
     labels: Object.keys(groupedData),
     datasets: [
@@ -111,16 +99,16 @@ const App = () => {
   const exportPdf = async () => {
     const doc = new jsPDF({ orientation: "landscape", unit: "mm", format: [297, 210] });
 
-    const margin = 10; 
+    const margin = 10;
 
     const drawLineBelowTable = (doc, y) => {
       if (typeof y === 'number' && !isNaN(y)) {
         doc.setLineWidth(0.5);
         doc.setDrawColor('#4c9dba');
-        doc.line(10, y + 10, 297 - 10, y + 10); 
+        doc.line(10, y + 10, 297 - 10, y + 10);
       } else {
         console.error("Invalid Y coordinate for line.");
-      } 
+      }
     };
     const logoUrl = `${process.env.PUBLIC_URL}/golden2.png.png`;
     const logoImage = await loadImage(logoUrl);
@@ -142,7 +130,7 @@ const App = () => {
       doc.text(companyName, companyNameX, companyNameY);
 
 
-      const lineY = logoY + logoHeight + 1; 
+      const lineY = logoY + logoHeight + 1;
       doc.setLineWidth(0.5);
       doc.setDrawColor('#549d9e');
       doc.line(logoX, lineY, 297 - 10, lineY);
@@ -158,16 +146,16 @@ const App = () => {
     const pageWidth = doc.internal.pageSize.width;
     const companyNameWidth = doc.getTextWidth(companyName);
     const companyNameX = pageWidth - companyNameWidth - 10;
-    const companyNameY = logoY + 14; 
+    const companyNameY = logoY + 14;
     doc.text(companyName, companyNameX, companyNameY);
 
-   
+
     const lineY = logoY + logoHeight + 1;
     doc.setLineWidth(0.5);
-    doc.setDrawColor('#4c9dba'); 
+    doc.setDrawColor('#4c9dba');
     doc.line(logoX, lineY, 297 - 10, lineY);
 
-   
+
     const printDate = new Date();
     const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
     const printDateText = "Report created on: " + printDate.toLocaleDateString(undefined, options);
@@ -179,35 +167,35 @@ const App = () => {
 
     const printDateWidth = doc.getTextWidth(printDateText);
     const scannedOnWidth = doc.getTextWidth(scannedOnText);
-    const textStartX = 297 - Math.max(printDateWidth, scannedOnWidth) - 10; 
+    const textStartX = 297 - Math.max(printDateWidth, scannedOnWidth) - 10;
 
-    doc.text(printDateText, textStartX, lineY + 6); 
-    doc.text(scannedOnText, textStartX, lineY + 12); 
-   
+    doc.text(printDateText, textStartX, lineY + 6);
+    doc.text(scannedOnText, textStartX, lineY + 12);
+
     doc.setFontSize(25);
     doc.setFont("times", "italic");
     doc.setTextColor(128, 0, 128);
     const finalReportText = "Final Report";
     const finalReportWidth = doc.getTextWidth(finalReportText);
-    const finalReportX = (pageWidth - finalReportWidth) / 2; 
-    const finalReportY = lineY + 10; 
+    const finalReportX = (pageWidth - finalReportWidth) / 2;
+    const finalReportY = lineY + 10;
     doc.text(finalReportText, finalReportX, finalReportY);
 
 
-    
-    const separationLineY = finalReportY + 5; 
-    doc.setLineWidth(0.5); 
-    doc.setDrawColor('#4c9dba');
+
+    const separationLineY = finalReportY + 5;
+    doc.setLineWidth(0.5);
+    doc.setDrawColor(76, 157, 186);
     doc.line(10, separationLineY, 297 - 10, separationLineY);
 
     const reportDescTitle = "Report Description:";
     const reportDescFontSize = 10;
     doc.setFontSize(reportDescFontSize);
     doc.setFont("helvetica", "bold");
-    doc.setTextColor(128, 0, 128); 
+    doc.setTextColor(128, 0, 128);
     const reportDescWidth = doc.getTextWidth(reportDescTitle);
-    const reportDescX = 10; 
-    const reportDescY = lineY + 7; 
+    const reportDescX = 10;
+    const reportDescY = lineY + 7;
 
     doc.text(reportDescTitle, reportDescX, reportDescY);
 
@@ -218,7 +206,7 @@ const App = () => {
     const loremFontSize = 9;
     doc.setFontSize(loremFontSize);
     doc.setFont("helvetica", "normal");
-    doc.setTextColor(0, 0, 0); 
+    doc.setTextColor(0, 0, 0);
 
     const loremX = reportDescX + doc.getTextWidth(reportDescTitle) + 8;
     const loremY = reportDescY;
@@ -226,8 +214,8 @@ const App = () => {
     doc.text(loremText, loremX, loremY, { maxWidth: pageWidth - loremX - 10 });
 
 
-    
-    const tableStartY = separationLineY + 6; 
+
+    const tableStartY = separationLineY + 6;
 
     const tableData = data.map((row) => [
       row.id,
@@ -273,7 +261,7 @@ const App = () => {
       margin: { top: tableStartY + 10 },
       didDrawPage: (data) => {
         drawPageBorder(doc);
-        const tableY = doc.autoTable.previous.finalY; 
+        const tableY = doc.autoTable.previous.finalY;
         drawLineBelowTable(doc, tableY);
         addHeader(doc);
       },
@@ -297,33 +285,33 @@ const App = () => {
 
       const pieChartImage = await html2canvas(pieChartElement, { scale: 2 });
       const pieImgData = pieChartImage.toDataURL("image/png");
-      const barChartOffset = 12; 
+      const barChartOffset = 12;
 
       const pieChartOffsetX = 9;
-      doc.addImage(barImgData, "PNG", margin, chartStartY + 40+ barChartOffset, 140, 100);
-      doc.addImage(pieImgData, "PNG", margin+150+ pieChartOffsetX, chartStartY + 30, 140, 95);
+      doc.addImage(barImgData, "PNG", margin, chartStartY + 40 + barChartOffset, 140, 100);
+      doc.addImage(pieImgData, "PNG", margin + 150 + pieChartOffsetX, chartStartY + 30, 140, 95);
     }
 
     const addWatermarkAndPageNumbers = () => {
-      const watermarkText = "Powered by Elogix";
+      const watermarkText = "Powered by Elogix.";
       const watermarkFontSize = 9;
       const watermarkX = margin;
       const watermarkOffset = 10;
       const totalPages = doc.internal.getNumberOfPages();
-    
+
       for (let i = 1; i <= totalPages; i++) {
         doc.setPage(i);
-        const lineBelowTableY = doc.autoTable.previous.finalY + 6; 
-    
+        const lineBelowTableY = doc.autoTable.previous.finalY + 6;
+
         doc.setFontSize(watermarkFontSize);
         doc.setFont("helvetica", "italic");
-        doc.setTextColor(150, 150, 150); 
-        const watermarkY = lineBelowTableY + watermarkOffset; 
+        doc.setTextColor(150, 150, 150);
+        const watermarkY = lineBelowTableY + watermarkOffset;
         doc.text(watermarkText, watermarkX, watermarkY);
-    
+
         doc.setFontSize(10);
         const pageCountText = `Page ${i} of ${totalPages}`;
-        const pageCountX = 297 - margin; 
+        const pageCountX = 297 - margin;
         const pageCountY = lineBelowTableY + watermarkOffset;
         doc.text(pageCountText, pageCountX, pageCountY, { align: 'right' });
       }
@@ -332,7 +320,7 @@ const App = () => {
     const totalPages = doc.internal.getNumberOfPages();
     for (let i = 1; i <= totalPages; i++) {
       doc.setPage(i);
-      const tableY = doc.autoTable.previous.finalY; 
+      const tableY = doc.autoTable.previous.finalY;
       drawLineBelowTable(doc, tableY);
       drawPageBorder(doc);
     }
