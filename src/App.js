@@ -294,7 +294,7 @@ const App = () => {
 
     const addWatermarkAndPageNumbers = () => {
       const watermarkText = "Powered by Elogix.";
-      const watermarkFontSize = 9;
+      const watermarkFontSize = 10;
       const watermarkX = margin;
       const watermarkOffset = 10;
       const totalPages = doc.internal.getNumberOfPages();
@@ -402,7 +402,6 @@ const App = () => {
         <div ref={pieChartRef} style={{ width: "400px", height: "300px" }}>
           <Pie data={pieChartData} options={pieChartOptions} />
         </div>
-
       </div>
     </div>
   );
